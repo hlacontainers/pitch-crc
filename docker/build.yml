@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+ pi-crc:
+  build:
+   context: context
+   dockerfile: Dockerfile
+  image: ${REPOSITORY}pitch-crc:${VERSION}
+  

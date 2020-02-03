@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+ license:
+  build:
+   context: .
+   args:
+    SRC: prefs.xml
+    VOLUMEDIR: /data
+   dockerfile: Dockerfile
+  image: ${LICENSE_IMAGE}

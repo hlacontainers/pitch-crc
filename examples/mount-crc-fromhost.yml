@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+ xserver:
+  image: ${REPOSITORY}xserver
+  ports:
+  - "8080:8080"
+ 
+ crc:
+  image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}
+  mac_address: ${MAC_ADDRESS}
+  volumes:
+  - ${RTI_HOME}:/usr/local/prti1516e
+  environment:
+  - DISPLAY=${DISPLAY}
+  ports:
+  - "8989:8989"

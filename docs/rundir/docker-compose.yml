@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+ xserver:
+  image: ${REPOSITORY}xserver
+  ports:
+  - "8080:8080"
+
+ crc:
+  image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}
+  mac_address: ${MAC_ADDRESS}
+  environment:
+  - DISPLAY=${DISPLAY}
+  ports:
+  - "8989:8989"
+  volumes:
+  - license_volume:/etc/.java/.systemPrefs/se/pitch/prti1516e/config:nocopy
+  depends_on:
+  - license
+
+ license:
+  image: ${LICENSE_IMAGE}
+  volumes:
+  - license_volume:/data
+
+volumes:
+ license_volume:
+ 

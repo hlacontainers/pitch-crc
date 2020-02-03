@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+ image:
+  build:
+   context: .
+   args:
+    SRC: var/lib/docker
+    VOLUMEDIR: /var/lib/docker
+   dockerfile: Dockerfile
+  image: ${REPOSITORY}pitch-crc-volume:${PITCH_VERSION}
