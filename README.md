@@ -101,7 +101,7 @@ The license key can also be injected in the CRC container image, making it a per
 With this option a new (licensed) CRC image is created. As a best practice the letter `L` is added to the version to indicate that the image holds a license key, for example:
 
 ````
-hlacontainers/pitch/crc:5.5.0.0L
+hlacontainers/pitch-crc:5.5.0.0L
 ````
 
 ## Provide an alternate Pitch RID file
