@@ -11,6 +11,8 @@ ARG PITCH_VERSION=free_5_4_5_0
 #########################
 FROM ubuntu:16.04 AS base
 
+ARG PITCH_VERSION
+
 # Install required font-related packages for install4j
 RUN apt-get update && apt-get install -y libfreetype6 libfontconfig
 
@@ -18,7 +20,7 @@ RUN apt-get update && apt-get install -y libfreetype6 libfontconfig
 ENV RTI_HOME=/usr/local/prti1516e
 
 # Copy and run the pRTI Linux installer
-COPY  prti1516e-${PITCH_VERSION}_linux64_*.sh /tmp/
+COPY ./prti1516e-${PITCH_VERSION}_linux64_*.sh /tmp/
 RUN sh $(ls /tmp/*.sh) -q -d ${RTI_HOME}
 
 # Ensure there is a skeleton structure

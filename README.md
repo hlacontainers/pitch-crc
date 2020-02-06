@@ -31,12 +31,6 @@ REPOSITORY=hlacontainers/
 
 # Pitch version
 PITCH_VERSION=free_5_4_5_0
-
-# Pitch MAC address for license key (required for a licensed RTI using MAC address)
-MAC_ADDRESS=00:18:8B:0D:4F:0B
-
-# X DISPLAY for the CRC (required for the Pitch Free RTI, optional for a licensed RTI)
-DISPLAY=xserver:0
 ````
 
 The environment file should be used to tailor the composition to the local infrastructure, such as the address of the X Server.
