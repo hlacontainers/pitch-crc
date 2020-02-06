@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+# Set default for build-time ARGs
+ARG PITCH_VERSION=free_5_4_5_0
+
 #########################
 # Create Base image
 #########################
@@ -14,8 +17,8 @@ RUN apt-get update && apt-get install -y libfreetype6 libfontconfig
 # Set the RTI_HOME
 ENV RTI_HOME=/usr/local/prti1516e
 
-# Use most recent pRTI installer (in case there is more than one to pick from)
-COPY  $(ls -t /tmp/*.sh | head -1) /tmp/
+# Copy and run the pRTI Linux installer
+COPY  prti1516e-${PITCH_VERSION}_linux64_*.sh /tmp/
 RUN sh $(ls /tmp/*.sh) -q -d ${RTI_HOME}
 
 # Ensure there is a skeleton structure
