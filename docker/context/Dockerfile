@@ -8,17 +8,17 @@
 #########################
 FROM ubuntu:16.04 AS base
 
-# Install required, but missing, font-related packages for install4j
+# Install required font-related packages for install4j
 RUN apt-get update && apt-get install -y libfreetype6 libfontconfig
 
 # Set the RTI_HOME
 ENV RTI_HOME=/usr/local/prti1516e
 
-# Install pRTI
-COPY *.sh /tmp/
+# Use most recent pRTI installer (in case there is more than one to pick from)
+COPY  $(ls -t /tmp/*.sh | head -1) /tmp/
 RUN sh $(ls /tmp/*.sh) -q -d ${RTI_HOME}
 
-# Ensure at least directories and setting files are created in case we use a placefolder install file
+# Ensure there is a skeleton structure
 RUN mkdir -p ${RTI_HOME}/bin ${RTI_HOME}/include ${RTI_HOME}/jre ${RTI_HOME}/lib ${RTI_HOME}/.install4j /root/prti1516e
 RUN touch /root/prti1516e/prti1516eLRC.settings /root/prti1516e/prti1516e.logging
 
