@@ -5,5 +5,7 @@ services:
   build:
    context: context
    dockerfile: Dockerfile
+   args:
+   - PITCH_VERSION=${PITCH_VERSION}
   image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}
   

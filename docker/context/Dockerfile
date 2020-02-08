@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y libfreetype6 libfontconfig
 ENV RTI_HOME=/usr/local/prti1516e
 
 # Copy and run the pRTI Linux installer
-COPY ./prti1516e-${PITCH_VERSION}_linux64_*.sh /tmp/
+COPY ./prti1516e*${PITCH_VERSION}*linux64*.sh /tmp/
 RUN sh $(ls /tmp/*.sh) -q -d ${RTI_HOME}
 
 # Ensure there is a skeleton structure
