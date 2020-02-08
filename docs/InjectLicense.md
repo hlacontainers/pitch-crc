@@ -26,10 +26,10 @@ source .env
 docker run \
 	--mac-address=${MAC_ADDRESS} \
 	--name crc \
-	${REPOSITORY}pitch/crc:${PITCH_CRC_VERSION} -l ${LICENSE}
+	${REPOSITORY}pitch-crc:${PITCH_VERSION} -l ${LICENSE}
 
 # commit as a new image
-docker commit -c 'ENTRYPOINT ["/bin/sh", "./start.sh"]' crc ${REPOSITORY}pitch/crc:${PITCH_CRC_VERSION}L
+docker commit -c 'ENTRYPOINT ["/bin/sh", "./start.sh"]' crc ${REPOSITORY}pitch-crc:${PITCH_VERSION}L
 
 # clean up
 docker rm crc
@@ -44,7 +44,7 @@ version: '3'
 
 services:
  crc:
-  image: ${REPOSITORY}pitch/crc:${PITCH_CRC_VERSION}L
+  image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}L
   mac_address: ${MAC_ADDRESS}
   environment:
   - DISPLAY=${DISPLAY}
