@@ -4,7 +4,7 @@ The Pitch CRC image can be built with the Pitch RTI installer from Pitch, or wit
 
 In the first case the Pitch RTI files are installed in the image and - when built - the image is ready to run.
 
-In the second case only a skeleton directory structure and some necessary (but empty) files are created in the image. No Pitch files are installed in the image and the files from the Pitch RTI installer must be mounted into the CRC container afterwards in order to create a functional CRC container.
+In the second case only a **skeleton** directory structure and some necessary (but empty) files are created in the image. No Pitch files are installed in the image and the files from the Pitch RTI installer must be mounted into the CRC container afterwards in order to create a functional CRC container.
 
 Both options are described below.
 

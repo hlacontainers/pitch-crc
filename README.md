@@ -1,29 +1,37 @@
 # Pitch CRC image
-This repository contains the files and instructions to build and run a Docker container image for the Pitch Central RTI Component (CRC). **This repository does not include any Pitch files**. The Pitch RTI and license keys must be acquired from the vendor. A free version of the Pitch RTI for two federates can be requested from the vendor website. For more information about the Pitch RTI, see http://pitchtechnologies.com.
+The Pitch Central RTI Component (CRC) is an application that manages one or more federation executions within the Pitch RTI. For example, it keeps track of joined federates and maintains information about the publication and subscription interests of individual federates. The CRC is a required application when using the Pitch RTI.
 
-For the instructions to build the Pitch CRC container image see [BUILDME](BUILDME.md).
+This repository contains the files and instructions to build and run a Docker container image for the Pitch CRC. **This repository does not include any Pitch files**. The Pitch RTI and license keys must be acquired from the vendor. A free version of the Pitch RTI for two federates can be requested from the vendor site. For more information about the Pitch RTI, see http://pitchtechnologies.com. 
 
-The simplest way to start the Pitch CRC container is with the following `docker-compose.yml` file:
+By default a **skeleton** Docker container image is built from the files in this repository. A skeleton container image does not include any Pitch proprietary files. These files must be mounted into the CRC container at run-time in order to create a functional CRC container.
+
+For the instructions to build a skeleton or a complete Pitch CRC container image see [BUILDME](BUILDME.md).
+
+The simplest way to start the Pitch CRC container is with the following `docker-compose.yml` file, with the following assumptions:
+
+- The Pitch CRC container image is skeleton image. 
+- The Pitch Free RTI is installed on the host file system under the directory `${RTI_HOME}`.
 
 ````
 version: '3'
 
-services: 
+services:
  xserver:
   image: ${REPOSITORY}xserver
   ports:
   - "8080:8080"
-  
+ 
  crc:
   image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}
-  mac_address: ${MAC_ADDRESS}
+  volumes:
+  - ${RTI_HOME}:/usr/local/prti1516e
   environment:
   - DISPLAY=${DISPLAY}
   ports:
   - "8989:8989"
 ````
 
-and using the following `.env` file:
+And where the following `.env` file is used:
 
 ````
 # Repository prefix
@@ -31,9 +39,15 @@ REPOSITORY=hlacontainers/
 
 # Pitch version
 PITCH_VERSION=free_5_4_5_0
+
+# X DISPLAY for the CRC (required for the Pitch Free RTI, optional for a licensed RTI)
+DISPLAY=xserver:0
+
+# Example of installation directory of the Pitch RTI (for mount example)
+RTI_HOME=/usr/local/prti1516e
 ````
 
-The environment file should be used to tailor the composition to the local infrastructure, such as the address of the X Server.
+The environment file should be used to tailor the composition to the local infrastructure, such as the address of the X Server or the installation directory of the Pitch RTI.
 
 Port 8989 is the default port on which the Pitch CRC listens for connection requests from a Local RTI Component (LRC).
 
