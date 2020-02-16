@@ -8,6 +8,8 @@ In the second case only a skeleton directory structure and some necessary (but e
 
 Both options are described below.
 
+Tested Pitch RTI versions: `free_5_4_5_0`, `5.5.0.0`.
+
 ## Build CRC image with the Pitch RTI installer
 
 Perform the following steps to build the Pitch CRC image with the RTI installer from Pitch.
