@@ -4,7 +4,7 @@
 #
 
 # Set default for build-time ARGs
-ARG PITCH_VERSION=free_5_4_5_0
+ARG PITCH_VERSION=skeleton
 
 #########################
 # Create Base image

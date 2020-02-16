@@ -7,10 +7,10 @@ By default a **skeleton** Docker container image is built from the files in this
 
 For the instructions to build a skeleton or a complete Pitch CRC container image see [BUILDME](BUILDME.md).
 
-The simplest way to start the Pitch CRC container is with the following `docker-compose.yml` file, with the following assumptions:
+The simplest way to start the Pitch CRC container is with the following `docker-compose.yml` file, where in this example:
 
-- The Pitch CRC container image is skeleton image. 
-- The Pitch Free RTI is installed on the host file system under the directory `${RTI_HOME}`.
+- The Pitch CRC container image is a skeleton image. 
+- The Pitch Free RTI is installed on the host file system under the directory `${PITCH_RTI_HOME}`.
 
 ````
 version: '3'
@@ -24,7 +24,7 @@ services:
  crc:
   image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}
   volumes:
-  - ${RTI_HOME}:/usr/local/prti1516e
+  - ${PITCH_RTI_HOME}:/usr/local/prti1516e
   environment:
   - DISPLAY=${DISPLAY}
   ports:
@@ -38,13 +38,16 @@ And where the following `.env` file is used:
 REPOSITORY=hlacontainers/
 
 # Pitch version
-PITCH_VERSION=free_5_4_5_0
+PITCH_VERSION=skeleton
 
 # X DISPLAY for the CRC (required for the Pitch Free RTI, optional for a licensed RTI)
 DISPLAY=xserver:0
 
-# Example of installation directory of the Pitch RTI (for mount example)
-RTI_HOME=/usr/local/prti1516e
+# Host installation directory of the Pitch RTI (TAILOR THIS TO YOUR OWN ENVIRONMENT)
+# For example:
+# - on Linux: PITCH_RTI_HOME=/usr/local/prti1516e
+# - on Windows: PITCH_RTI_HOME=C:\Program Files\prti1516e
+PITCH_RTI_HOME=/usr/local/prti1516e
 ````
 
 The environment file should be used to tailor the composition to the local infrastructure, such as the address of the X Server or the installation directory of the Pitch RTI.

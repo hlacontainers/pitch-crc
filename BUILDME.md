@@ -1,10 +1,10 @@
 # Build the Pitch CRC image
 
-The Pitch CRC image can be built with the Pitch RTI installer from Pitch, or with the placeholder installer that is already present in this repository.
+The Pitch CRC image can be built with the **Pitch RTI installer** from Pitch, or with the **skeleton installer** that is already present in this repository.
 
 In the first case the Pitch RTI files are installed in the image and - when built - the image is ready to run.
 
-In the second case only a **skeleton** directory structure and some necessary (but empty) files are created in the image. No Pitch files are installed in the image and the files from the Pitch RTI installer must be mounted into the CRC container afterwards in order to create a functional CRC container.
+In the second case only a skeleton directory structure and some necessary (but empty) files are created in the image. No Pitch files are installed in the image and the files from the Pitch RTI installer must be mounted into the CRC container afterwards in order to create a functional CRC container.
 
 Both options are described below.
 
@@ -20,25 +20,31 @@ This repository does not contain the Pitch RTI installer due to license restrict
 
 Clone this Git repository to the directory named `${WORKDIR}`.
 
-Copy the Pitch RTI installer into the directory `${WORKDIR}/pitch-crc/docker/context` and remove the placeholder installer that is already there. The name of the Pitch RTI installer is for example `prti1516e-free_5_4_5_0_linux64_b182.sh`.
+Copy the Pitch RTI installer into the directory `${WORKDIR}/pitch-crc/docker/context`. The name of the Pitch RTI installer for Pitch RTI version `<version>` must match with `prti1516e*<version>*linux64*.sh`, for example `prti1516e-free_5_4_5_0_linux64_b182.sh`.
 
-Note the version number `free_5_4_5_0` in the file name.
+Note the Pitch RTI version number in the file name, in this example `free_5_4_5_0`.
 
 ### Build image
 
 Change into the directory `${WORKDIR}/pitch-crc/docker`.
 
-Check and if needed adapt the environment variable settings in the file `.env`. For example, set the version number.
+Edit the file `.env` and set the Pitch RTI version number noted before.
 
-Next, build the CRC container image with:
+Next, build the **complete** CRC container image with:
 
 ````
 docker-compose -f build.yml build
 ````
 
-## Build skeleton CRC image with the placeholder installer
+The name of the resulting image is:
 
-Perform the following steps to build a skeleton Pitch CRC image with the placeholder installer. Note again that the resulting image is not executable since the Pitch files are missing. These files need to be mounted in the container.
+````
+hlacontainers/pitch-crc:<version>
+````
+
+## Build skeleton CRC image with the skeleton installer
+
+Perform the following steps to build a skeleton Pitch CRC image with the skeleton installer. Note again that the resulting image is not executable since the Pitch files are missing. These files need to be mounted in the container.
 
 ### Clone repository
 
@@ -48,33 +54,15 @@ Clone this Git repository to the directory named `${WORKDIR}`.
 
 Change into the directory `${WORKDIR}/pitch-crc/docker`.
 
-Check and if needed adapt the environment variable settings in the file `.env`. For example, set the version number.
-
-Next, build the **skeleton** CRC container image with:
+Build the **skeleton** CRC container image with:
 
 ````
 docker-compose -f build.yml build
 ````
 
-### Run skeleton CRC container
-
-An example on how to run the skeleton Pitch CRC container is provided under the examples directory in this repository. We assume in the example that the Pitch RTI (including the CRC) is installed on the host filesystem under the directory `RTI_HOME`. The directory `RTI_HOME` is mounted into the skeleton CRC container to create a functional CRC container, as shown in the composition below:
+The name of the resulting image is:
 
 ````
-version: '3'
-
-services: 
- xserver:
-  image: ${REPOSITORY}xserver
-  ports:
-  - "8080:8080"
-  
- crc:
-  image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}
-  mac_address: ${MAC_ADDRESS}
-  environment:
-  - DISPLAY=${DISPLAY}
-  ports:
-  - "8989:8989"
+hlacontainers/pitch-crc:skeleton
 ````
 
