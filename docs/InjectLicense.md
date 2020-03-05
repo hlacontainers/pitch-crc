@@ -28,6 +28,8 @@ The value for the MAC address above is an example. Adapt the value of `MAC_ADDRE
 Inject license and create new image
 ----------------------
 
+Copy the license file to the build directory and rename the file to `LicenseFile.txt`.
+
 Execute the following commands from a shell. Note that a new image is committed with `docker commit` and tagged with the additional letter `L` to indicate that this image includes a license key.
 
 ````
