@@ -18,7 +18,7 @@ cd builddir
 # Change the following environment values to match your license key:
 cat << EOF >> .env
 REPOSITORY=hlacontainers/
-PITCH_VERSION=5.5.0.0
+PITCH_VERSION=5_5_0_0
 LICENSE_IMAGE=pitch-license
 MAC_ADDRESS=00:18:8B:0D:4F:0B
 DISPLAY=xserver:0

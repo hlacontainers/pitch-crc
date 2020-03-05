@@ -7,11 +7,23 @@ To do this, perform the following steps.
 
 ## Create build directory and environment settings file
 
-This is the same step as in [Create a Pitch License Container](CreateLicenseImage.md).
+Prepare a `builddir` with a `.env` file in it:
 
-## Set LICENSE environment variable
+````Ada
+mkdir builddir
 
-This is the same step as in [Create a Pitch License Container](CreateLicenseImage.md).
+cd builddir
+
+# Change the following environment values to match your license key:
+cat << EOF >> .env
+REPOSITORY=hlacontainers/
+PITCH_VERSION=5_5_0_0
+MAC_ADDRESS=00:18:8B:0D:4F:0B
+DISPLAY=xserver:0
+EOF
+````
+
+The value for the MAC address above is an example. Adapt the value of `MAC_ADDRESS` to a value that matches with the license key. Optionally set the value of `DISPLAY` to an X Display. This setting is used later to run the Pitch CRC container with an X Display.
 
 Inject license and create new image
 ----------------------
@@ -26,7 +38,7 @@ source .env
 docker run \
 	--mac-address=${MAC_ADDRESS} \
 	--name crc \
-	${REPOSITORY}pitch-crc:${PITCH_VERSION} -l ${LICENSE}
+	${REPOSITORY}pitch-crc:${PITCH_VERSION} -l $(sed -n 2p LicenseFile.txt)
 
 # commit as a new image
 docker commit -c 'ENTRYPOINT ["/bin/sh", "./start.sh"]' crc ${REPOSITORY}pitch-crc:${PITCH_VERSION}L
@@ -43,6 +55,11 @@ In this final step we show how to run the licensed Pitch CRC container. Create t
 version: '3'
 
 services:
+ xserver:
+  image: ${REPOSITORY}xserver
+  ports:
+  - "8080:8080"
+ 
  crc:
   image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}L
   mac_address: ${MAC_ADDRESS}
