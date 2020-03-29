@@ -35,7 +35,7 @@ source .env
 docker run --rm --privileged --name dind -p 22375:2375 -v $HOME/dind/var/lib/docker:/var/lib/docker -d docker:dind dockerd -H tcp://0.0.0.0:2375
 
 # load the CRC container into DiD so that data appears in /var/lib/docker
-docker save ${REPOSITORY}pitch/crc:${PITCH_CRC_VERSION} | docker -H :22375 load
+docker save ${REPOSITORY}pitch-crc:${PITCH_CRC_VERSION} | docker -H :22375 load
 
 # Stop DiD
 docker stop dind
@@ -139,7 +139,7 @@ docker -H :22375 run -d --restart=always \
 	-p 8989:8989 \
 	-e DISPLAY=${DISPLAY} \
 	--mac-address=${MAC_ADDRESS} \
-	--name crc ${REPOSITORY}pitch/crc:${PITCH_CRC_VERSION}
+	--name crc ${REPOSITORY}pitch-crc:${PITCH_CRC_VERSION}
 ````
 
 Test if the CRC container is running:

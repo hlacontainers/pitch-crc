@@ -1,4 +1,4 @@
-# Create a Pitch license container
+# Create a Pitch RTI license container
 
 The Pitch RTI requires a license key in order to run. The license file with the license key and the associated MAC address must be requested from the vendor.
 
@@ -44,10 +44,12 @@ This command sets the environment variable `LICENSE` to the second line in the l
 Next, run the license activator to create the file `prefs.xml`, using the following command from a Linux shell:
 
 ```
+source .env
+
 docker run \
   --mac-address=${MAC_ADDRESS} \
   --rm -v $PWD:/etc/.java/.systemPrefs/se/pitch/prti1516e/config \
-  ${REPOSITORY}pitch/crc:${PITCH_VERSION} -l ${LICENSE}
+  ${REPOSITORY}pitch-crc:${PITCH_VERSION} -l ${LICENSE}
 ```
 
 After running this command a file `prefs.xml` should be created in the current working directory.
