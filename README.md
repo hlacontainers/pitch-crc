@@ -10,7 +10,7 @@ For the instructions to build a skeleton or a complete Pitch CRC container image
 The simplest way to start the Pitch CRC container is with the following `docker-compose.yml` file, where in this example:
 
 - The Pitch CRC container image is a skeleton image. 
-- The Pitch Free RTI is installed on the host file system under the directory `${PITCH_RTI_HOME}`.
+- The **Linux edition** of the Pitch Free RTI is installed on the host file system under the directory `${PITCH_RTI_HOME}`.
 
 ````
 version: '3'
