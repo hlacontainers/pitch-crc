@@ -19,7 +19,7 @@ cd builddir
 cat << EOF >> .env
 REPOSITORY=hlacontainers/
 PITCH_VERSION=5_5_0_0
-LICENSE_IMAGE=pitch-license
+LICENSE_IMAGE=pitch-crc-license
 MAC_ADDRESS=00:18:8B:0D:4F:0B
 DISPLAY=xserver:0
 EOF
@@ -27,19 +27,9 @@ EOF
 
 The value for the MAC address above is an example. Adapt the value of `MAC_ADDRESS` to a value that matches with the license key. Optionally set the value of `DISPLAY` to an X Display. This setting is used later to run the Pitch CRC container with an X Display.
 
-## Set LICENSE environment variable
+## Run license activator
 
 Copy the license file to the build directory and rename the file to `LicenseFile.txt`.
-
-From a Linux shell execute the following command:
-
-```
-LICENSE=$(sed -n 2p LicenseFile.txt)
-```
-
-This command sets the environment variable `LICENSE` to the second line in the license file.
-
-## Run license activator
 
 Next, run the license activator to create the file `prefs.xml`, using the following command from a Linux shell:
 
@@ -49,7 +39,7 @@ source .env
 docker run \
   --mac-address=${MAC_ADDRESS} \
   --rm -v $PWD:/etc/.java/.systemPrefs/se/pitch/prti1516e/config \
-  ${REPOSITORY}pitch-crc:${PITCH_VERSION} -l ${LICENSE}
+  ${REPOSITORY}pitch-crc:${PITCH_VERSION} -l $(sed -n 2p LicenseFile.txt)
 ```
 
 After running this command a file `prefs.xml` should be created in the current working directory.
@@ -156,33 +146,5 @@ In case the license container is updated with new license data, the license volu
 
 ## Use convenience script for building license container image
 
-Once the `builddir` with the content described in the steps above is in place, the creation of the license container image can be automated with the following script `build.sh`:
-
-````
-#!/bin/sh
-
-# Source environment variables
-. $PWD/.env
-
-# Get the license data
-LICENSE=$(sed -n 2p LicenseFile.txt)
-
-echo "Using:"
-echo "PITCH_VERSION"=${PITCH_VERSION}
-echo "LICENSE_IMAGE="${LICENSE_IMAGE}
-echo "LICENSE="${LICENSE}
-echo "MAC_ADDRESS="${MAC_ADDRESS}
-echo
-
-rm -f prefs.xml
-
-# Create the license data
-docker run \
-  --mac-address=${MAC_ADDRESS} \
-  --rm -v $PWD:/etc/.java/.systemPrefs/se/pitch/prti1516e/config \
-  ${REPOSITORY}pitch/crc:${PITCH_VERSION} -l ${LICENSE}
-
-# And build a data container image with the license data
-docker-compose build
-````
+Once the `builddir` with the content described in the steps above is in place, the creation of the license container image can be automated by running the script `build.sh` located in the repository `builddir`.
 
