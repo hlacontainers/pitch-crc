@@ -1,0 +1,43 @@
+# CI file for GitLab
+
+# Set defaults for variables
+variables:
+   PITCH_VERSION: "skeleton"
+   PITCH_CRC_IMAGE: $CI_REGISTRY_IMAGE:${PITCH_VERSION}
+   MAC_ADDRESS: ""
+   LICENSE: ""
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+stages:
+  - build
+  - inject
+  - trigger
+
+# Build the CRC image
+buildjob:
+  stage: build
+  script:
+    - docker build -t $PITCH_CRC_IMAGE --build-arg PITCH_VERSION=$PITCH_VERSION docker/context
+    - docker push $PITCH_CRC_IMAGE
+    
+# Inject license key, but only if a key and MAC address are provided
+injectjob:
+  stage: inject
+  script:
+    - docker run --mac-address=${MAC_ADDRESS} --name crc ${PITCH_CRC_IMAGE} -l ${LICENSE}
+    - docker commit -c 'ENTRYPOINT ["/bin/sh", "./start.sh"]' crc ${PITCH_CRC_IMAGE}L
+    - docker rm crc
+    - docker push ${PITCH_CRC_IMAGE}L
+  only:
+    variables:
+      - $LICENSE != "" && $MAC_ADDRESS != ""
+
+# Trigger the LRC build
+triggerjob:
+  stage: trigger
+  variables:
+    # use this version downstream
+    PITCH_VERSION: ${PITCH_VERSION}
+  trigger: hlacontainers/lrc

@@ -20,7 +20,7 @@ Create the following `.env` file (adapt values such as the MAC address and X Dis
 
 ````
 REPOSITORY=
-PITCH_CRC_VERSION=5.5.0.0L
+PITCH_CRC_VERSION=5_5_0_0L
 MAC_ADDRESS=00:18:8B:0D:4F:0B
 DISPLAY=192.168.137.11:0
 ````
@@ -101,7 +101,7 @@ services:
     SRC: var/lib/docker
     VOLUMEDIR: /var/lib/docker
    dockerfile: Dockerfile
-  image: ${REPOSITORY}pitch/crc-volume:${PITCH_CRC_VERSION}
+  image: ${REPOSITORY}pitch-crc-volume:${PITCH_CRC_VERSION}
 ````
 
 Build the crc volume. When we run `docker-compose build`,  Docker compose creates a tar ball of the build context to be sent to the engine. It does that in a temporary file. If  `/tmp` is too small we run out of disk space. If that is the case use another TMPDIR such as below:
