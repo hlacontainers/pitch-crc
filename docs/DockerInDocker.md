@@ -19,7 +19,7 @@ cd $HOME/dind
 Create the following `.env` file (adapt values such as the MAC address and X Display as needed):
 
 ````
-REPOSITORY=
+REPOSITORY=hlacontainers/
 PITCH_CRC_VERSION=5_5_0_0L
 MAC_ADDRESS=00:18:8B:0D:4F:0B
 DISPLAY=192.168.137.11:0
