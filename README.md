@@ -1,4 +1,5 @@
 ![Build Status](https://img.shields.io/docker/cloud/build/hlacontainers/pitch-crc)
+![Pulls](https://img.shields.io/docker/pulls/hlacontainers/pitch-crc)
 
 # Pitch CRC image
 The Pitch Central RTI Component (CRC) is an application that manages one or more federation executions within the Pitch RTI. For example, it keeps track of joined federates and maintains information about the publication and subscription interests of individual federates. The CRC is a required application when using the Pitch RTI.
