@@ -62,12 +62,16 @@ The Pitch Free RTI requires an X Display for displaying a message about the End 
 ## Container synopsis
 
 ````
-pitch-crc:<version> [-i] [-l <license key>]
+pitch-crc:<version> [-m <mac address>] [-l <license key>] [-i] [-x]
 ````
 
-`-i` : Set interactive mode. This option should be used in combination with the docker option `-i` in order to use the container TTY. Default is non-interactive.
+`-m` : Create a network interface with the provided MAC address. This option should be used to set a MAC address license. Requires container `NET_ADMIN` capability. Supersedes `CRC_MACADDRESS`setting.
 
-`-l` : Run license activator with the given key and exit.
+`-l` : Run license activator with the given license key. This option should be used when to set a MAC address license. Supersedes `CRC_LICENSE` setting.
+
+`-i` : Set interactive mode. This option should be used in combination with the docker option `-i` in order to use the container TTY. Default is non-interactive. Supersedes `CRC_INTERACTIVE` setting.
+
+`-x` : Exit after initialization, but before starting the CRC.  Supersedes `CRC_EXIT` setting.
 
 Ports:
 
@@ -83,13 +87,17 @@ The Pitch CRC has many configuration settings, stored in the file `prti1516eCRC.
 | ---------------------------------- | -------------------------- | ------------------------------------------------------------ | -------- |
 | ``CRC_NICKNAME``                   | `crc-<container hostname>` | The nickname for the CRC. The setting is relevant in **Booster Mode**, where the value is used to identify the CRC in the booster network. | No       |
 | ``CRC_LISTENPORT``                 | ``8989``                   | CRC listen port number.                                      | No       |
-| ``CRC_SKIP_CONNECTIVITY_CHECK``    | ``1``                      | A boolean (0 or 1) value indicating if  a connectivity test back to a connecting LRC should be skipped. | No       |
-| ``CRC_REJECT_MISMATCHED_VERSIONS`` | ``0``                      | A boolean (0 or 1) value indicating if a miss-matching LRC version should be rejected. | No       |
+| ``CRC_CONNECTIVITY_CHECK``         | -                          | When set to a non-empty string, a connectivity test to a connecting LRC is performed. | No       |
+| ``CRC_REJECT_MISMATCHED_VERSIONS`` | -                          | When set to a non-empty string, a miss-matching LRC version is rejected. | No       |
 | ``CRC_BOOSTERADDRESS``             | -                          | The address of the booster to connect to. The format of the address is `<BoosterHost>:<BoosterPort>`. If set, the CRC is started in **Booster Mode**, using the given booster address. If not set, the CRC starts in **Direct Mode**. | No       |
 | `CRC_BOOSTER_ADVERTISE_ADDRESS`    | -                          | Advertised address of the CRC to Booster. Format is `<Host>[:<Port>]`. This setting is only applicable in **Booster Mode**. See Pitch Manual for more information. | No       |
 | ``CRC_LICENSE_SERVER_HOST``        | -                          | The address of the license server host to connect to for LRC licenses. The host is either a hostname or an IP address. | No       |
 | ``CRC_LICENSE_SERVER_COUNT``       | -                          | The number of licenses to check out from the license server. | No       |
 | ``DISPLAY``                        | -                          | If set, use this X display as GUI. If no display is specified then the CRC will not attempt to connect to the X Server. The X display format is: ``<X Server host>``:``<Display number>``.  For the display number the value ``0`` is typically used. | No       |
+| `CRC_MACADDRESS`                   | -                          | MAC address related to license key. Requires that container has `NET_ADMIN` capability. | No       |
+| `CRC_LICENSE`                      | -                          | License key related to MAC address.                          | No       |
+| `CRC_INTERACTIVE`                  | -                          | Start CRC in interactive mode. Requires that container runs in interactive mode too. | No       |
+| `CRC_EXIT`                         | -                          | Exit once initialization has completed.                      | No       |
 
 If `CRC_BOOSTERADDRESS` is set then the Pitch CRC container will wait for the Pitch Booster listen port to open before starting the CRC application. Similarly, if `DISPLAY` is set then the Pitch CRC container will wait for the X Server listen port to open before starting the CRC application.
 
@@ -98,11 +106,18 @@ If `CRC_BOOSTERADDRESS` is set then the Pitch CRC container will wait for the Pi
 There are two ways to run the Pitch CRC container with a license:
 
 - Use a license server. This is by far the easiest option. The address of the license server and the number of required licenses can be set via the available environment variables.
-- Use a MAC address based license. This requires that the container is started with a specific MAC address and that the license key is either mounted into the container or already present (injected) inside the container image.
+- Use a MAC address based license. This requires that the container is started with a specific MAC address associated with the license key.
 
-With the MAC address based license the CRC container must be started with the `--mac-address` option, providing a MAC address value that corresponds with the license key. Not all overlay networks support a user defined MAC address. Overlay networks under Docker generally support user defined MAC addresses, but overlay networks under Kubernetes do not. An experimental workaround to this limitation is described in [Run the CRC with Docker In Docker](docs/DockerInDocker.md).
+With the MAC address based license the CRC container must have a network interface whose MAC address is associated with the license key. This can be achieved in two ways:
 
-The following applies to overlay networks that support a user defined MAC address.
+- start the container with the docker option `--mac-address`;
+- start the container with either the command line option `-m` or with the environment variable `CRC_MACADDRESS`. This option requires that the container has the `NET_ADMIN` capability set.
+
+There are several ways to provide the license key to the CRC container, explained next.
+
+### Provide license every time the container is started
+
+The license can be provided to the container with either the command line option `-l`, or with the environment variable `CRC_LICENSE`.
 
 ### Mount license key
 
