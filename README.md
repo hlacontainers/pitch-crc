@@ -75,7 +75,7 @@ pitch-crc:<version> [-m <mac address>] [-l <license key>] [-i] [-x]
 
 Ports:
 
-`8989` : CRC listen port for Local RTI Components. See environment variable `CRC_PORT`.
+`8989` : CRC listen port for Local RTI Components. See environment variable `CRC_LISTENPORT`.
 
 `1099` : RMI Registry listen port for Pitch Web UI.
 
