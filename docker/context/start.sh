@@ -164,9 +164,9 @@ if [ -f "$HOME/prti1516e/prti1516eCRC.settings" ]; then
 	sed -i "s/CRC.port.*/CRC.port=$CRC_LISTENPORT/" $HOME/prti1516e/prti1516eCRC.settings
 
 	if [ -n "$CRC_CONNECTIVITY_CHECK" ]; then
-		sed -i "s/CRC.skipConnectivityCheck.*/CRC.skipConnectivityCheck=true/" $HOME/prti1516e/prti1516eCRC.settings
-	else
 		sed -i "s/CRC.skipConnectivityCheck.*/CRC.skipConnectivityCheck=false/" $HOME/prti1516e/prti1516eCRC.settings
+	else
+		sed -i "s/CRC.skipConnectivityCheck.*/CRC.skipConnectivityCheck=true/" $HOME/prti1516e/prti1516eCRC.settings
 	fi
 
 	if [ -n "$CRC_REJECT_MISMATCHED_VERSIONS" ]; then
