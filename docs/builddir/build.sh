@@ -19,7 +19,7 @@ rm -f prefs.xml
 docker run \
   --mac-address=${MAC_ADDRESS} \
   --rm -v $PWD:/etc/.java/.systemPrefs/se/pitch/prti1516e/config \
-  ${REPOSITORY}pitch-crc:${PITCH_VERSION} -l ${LICENSE}
+  ${REPOSITORY}pitch-crc:${PITCH_VERSION} -l ${LICENSE} -x
 
 # And build a license container image with the license key
 docker-compose build
