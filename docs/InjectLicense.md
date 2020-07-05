@@ -40,7 +40,7 @@ source .env
 docker run \
 	--mac-address=${MAC_ADDRESS} \
 	--name crc \
-	${REPOSITORY}pitch-crc:${PITCH_VERSION} -l $(sed -n 2p LicenseFile.txt)
+	${REPOSITORY}pitch-crc:${PITCH_VERSION} -l $(sed -n 2p LicenseFile.txt) -x
 
 # commit as a new image
 docker commit -c 'ENTRYPOINT ["/bin/sh", "./start.sh"]' crc ${REPOSITORY}pitch-crc:${PITCH_VERSION}L

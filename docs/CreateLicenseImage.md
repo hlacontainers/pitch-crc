@@ -39,7 +39,7 @@ source .env
 docker run \
   --mac-address=${MAC_ADDRESS} \
   --rm -v $PWD:/etc/.java/.systemPrefs/se/pitch/prti1516e/config \
-  ${REPOSITORY}pitch-crc:${PITCH_VERSION} -l $(sed -n 2p LicenseFile.txt)
+  ${REPOSITORY}pitch-crc:${PITCH_VERSION} -l $(sed -n 2p LicenseFile.txt) -x
 ```
 
 After running this command a file `prefs.xml` should be created in the current working directory.
