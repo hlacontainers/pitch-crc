@@ -43,7 +43,7 @@ RUN touch /root/prti1516e/prti1516eLRC.settings /root/prti1516e/prti1516e.loggin
 FROM ubuntu:16.04
 
 # Get packages that we need to run the CRC GUI
-RUN apt-get update && apt-get install -y libfreetype6 libfontconfig libxext6 libxrender1 libxtst6 libxi6 netcat
+RUN apt-get update && apt-get install -y libfreetype6 libfontconfig libxext6 libxrender1 libxtst6 libxi6 netcat iproute2
 
 # Set the RTI_HOME
 ENV RTI_HOME=/usr/local/prti1516e

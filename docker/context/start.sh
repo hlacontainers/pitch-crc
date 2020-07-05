@@ -51,7 +51,7 @@ WaitForXServer() {
 	#Update display
 	DISPLAY=${XHOST}:${XDISPLAY}
 
-	XPORT=`expr $XDISPLAY + 6000`
+	XPORT=$(expr $XDISPLAY + 6000)
 		
 	WaitForHostPort "XServer" $XHOST $XPORT
 }
@@ -68,46 +68,20 @@ WaitForBooster() {
 	WaitForHostPort "Booster" $XHOST $XPORT
 }
 
-# Set defaults
-X=${CRC_NICKNAME:=crc-`hostname`}
-X=${CRC_LISTENPORT:=8989}
-X=${CRC_SKIP_CONNECTIVITY_CHECK:=1}
-X=${CRC_REJECT_MISMATCHED_VERSIONS:=0}
-X=${CRC_LICENSE_SERVER_COUNT:=0}
-
-if [ "$CRC_SKIP_CONNECTIVITY_CHECK" = "0" ]; then
-	CRC_SKIP_CONNECTIVITY_CHECK="0"
-else
-	CRC_SKIP_CONNECTIVITY_CHECK="1"
-fi
-
-if [ "$CRC_REJECT_MISMATCHED_VERSIONS" = "0" ]; then
-	CRC_REJECT_MISMATCHED_VERSIONS="0"
-else
-	CRC_REJECT_MISMATCHED_VERSIONS="1"
-fi
-
-echo "CRC: CRC_NICKNAME="$CRC_NICKNAME
-echo "CRC: CRC_LISTENPORT="$CRC_LISTENPORT
-echo "CRC: CRC_SKIP_CONNECTIVITY_CHECK="$CRC_SKIP_CONNECTIVITY_CHECK
-echo "CRC: CRC_REJECT_MISMATCHED_VERSIONS="$CRC_REJECT_MISMATCHED_VERSIONS
-echo "CRC: CRC_BOOSTERADDRESS="$CRC_BOOSTERADDRESS
-echo "CRC: CRC_BOOSTER_ADVERTISE_ADDRESS="$CRC_BOOSTER_ADVERTISE_ADDRESS
-echo "CRC: CRC_LICENSE_SERVER_HOST="$CRC_LICENSE_SERVER_HOST
-echo "CRC: CRC_LICENSE_SERVER_COUNT="$CRC_LICENSE_SERVER_COUNT
-echo "CRC: DISPLAY="$DISPLAY
-
-interactive="0"
-license=""
+# Get ENV settings from command line, if any
 
 # A POSIX variable
 OPTIND=1         # Reset in case getopts has been used previously in the shell.
 
-while getopts "l:i" opt; do
+while getopts "m:l:ix" opt; do
     case "$opt" in
-	l)	license=$OPTARG
+	m)	CRC_MACADDRESS=$OPTARG
         ;;
-	i)	interactive="1"
+	l)	CRC_LICENSE=$OPTARG
+        ;;
+	i)	CRC_INTERACTIVE="1"
+		;;
+	x)	CRC_EXIT="1"
 		;;
 	esac
 done
@@ -116,10 +90,32 @@ done
 shift $((OPTIND-1))
 [ "$1" = "--" ] && shift
 
-if [ "$license" != "" ]; then
-	echo "CRC: run license activator with '$license'"
-	${RTI_HOME}/bin/LicenseActivator primary $license
-	exit
+# Print the incoming ENVs
+echo "CRC: CRC_NICKNAME="$CRC_NICKNAME
+echo "CRC: CRC_LISTENPORT="$CRC_LISTENPORT
+echo "CRC: CRC_CONNECTIVITY_CHECK="$CRC_CONNECTIVITY_CHECK
+echo "CRC: CRC_REJECT_MISMATCHED_VERSIONS="$CRC_REJECT_MISMATCHED_VERSIONS
+echo "CRC: CRC_BOOSTERADDRESS="$CRC_BOOSTERADDRESS
+echo "CRC: CRC_BOOSTER_ADVERTISE_ADDRESS="$CRC_BOOSTER_ADVERTISE_ADDRESS
+echo "CRC: CRC_LICENSE_SERVER_HOST="$CRC_LICENSE_SERVER_HOST
+echo "CRC: CRC_LICENSE_SERVER_COUNT="$CRC_LICENSE_SERVER_COUNT
+echo "CRC: CRC_INTERACTIVE="$CRC_INTERACTIVE
+echo "CRC: CRC_EXIT="$CRC_EXIT
+
+# Set defaults
+X=${CRC_NICKNAME:=crc-`hostname`}
+X=${CRC_LISTENPORT:=8989}
+X=${CRC_CRC_LICENSE_SERVER_COUNT:=0}
+
+if [ -n "$CRC_MACADDRESS" ]; then
+	echo "CRC: Set MAC address to $CRC_MACADDRESS"
+	ip link add link eth0 address $CRC_MACADDRESS eth0.1 type macvlan
+	ip link set eth0.1 up
+fi
+
+if [ -n "$CRC_LICENSE" ]; then
+	echo "CRC: Run license activator with $CRC_LICENSE"
+	${RTI_HOME}/bin/LicenseActivator primary $CRC_LICENSE
 fi
 
 if [ ! -f "$HOME/prti1516e/prti1516eCRC.settings" ]; then
@@ -134,7 +130,7 @@ fi
 
 if [ -f "$HOME/prti1516e/prti1516eCRC.settings" ]; then
 	# Test if booster mode is used
-	if [ "$CRC_BOOSTERADDRESS" != "" ]; then
+	if [ -n "$CRC_BOOSTERADDRESS" ]; then
 		oldIFS=$IFS
 		IFS=:
 		set -- $CRC_BOOSTERADDRESS
@@ -149,7 +145,7 @@ if [ -f "$HOME/prti1516e/prti1516eCRC.settings" ]; then
 		sed -i "s/CRC.booster.address.*/CRC.booster.address=$boosterHost/" $HOME/prti1516e/prti1516eCRC.settings
 		sed -i "s/CRC.booster.port.*/CRC.booster.port=$boosterPort/" $HOME/prti1516e/prti1516eCRC.settings
 	
-		if [ "$CRC_BOOSTER_ADVERTISE_ADDRESS" != "" ]; then
+		if [ -n "$CRC_BOOSTER_ADVERTISE_ADDRESS" ]; then
 			# delete lines, if present
 			sed -i "/CRC.booster.advertise.mode.*/d" $HOME/prti1516e/prti1516eCRC.settings
 			sed -i "/CRC.booster.advertise.address.*/d" $HOME/prti1516e/prti1516eCRC.settings
@@ -167,24 +163,29 @@ if [ -f "$HOME/prti1516e/prti1516eCRC.settings" ]; then
 	sed -i "s/CRC.nickname.*/CRC.nickname=$CRC_NICKNAME/" $HOME/prti1516e/prti1516eCRC.settings
 	sed -i "s/CRC.port.*/CRC.port=$CRC_LISTENPORT/" $HOME/prti1516e/prti1516eCRC.settings
 
-	if [ "$CRC_SKIP_CONNECTIVITY_CHECK" = "1" ]; then
+	if [ -n "$CRC_CONNECTIVITY_CHECK" ]; then
 		sed -i "s/CRC.skipConnectivityCheck.*/CRC.skipConnectivityCheck=true/" $HOME/prti1516e/prti1516eCRC.settings
 	else
 		sed -i "s/CRC.skipConnectivityCheck.*/CRC.skipConnectivityCheck=false/" $HOME/prti1516e/prti1516eCRC.settings
 	fi
 
-	if [ "$CRC_REJECT_MISMATCHED_VERSIONS" = "1" ]; then
+	if [ -n "$CRC_REJECT_MISMATCHED_VERSIONS" ]; then
 		sed -i "s/CRC.rejectMismatchedVersions.*/CRC.rejectMismatchedVersions=reject/" $HOME/prti1516e/prti1516eCRC.settings
 	else
 		sed -i "s/CRC.rejectMismatchedVersions.*/CRC.rejectMismatchedVersions=accept/" $HOME/prti1516e/prti1516eCRC.settings
 	fi
 
-	if [ "$CRC_LICENSE_SERVER_HOST" != "" ]; then
+	if [ -n "$CRC_LICENSE_SERVER_HOST" ]; then
 		# add new lines about license server
 		echo "CRC.licenseType=server" >> $HOME/prti1516e/prti1516eCRC.settings
 		echo "CRC.license-server.host=$CRC_LICENSE_SERVER_HOST" >> $HOME/prti1516e/prti1516eCRC.settings
 		echo "CRC.license-server.federateCount=$CRC_LICENSE_SERVER_COUNT" >> $HOME/prti1516e/prti1516eCRC.settings
 	fi
+fi
+
+if [ -n "$CRC_EXIT" ]; then
+	echo "CRC: exit without starting CRC"
+	exit
 fi
 
 if [ -n "$DISPLAY" ]; then
@@ -200,14 +201,14 @@ echo "CRC: start"
 # Start process
 cd ${RTI_HOME}/bin
 
-if [ "$interactive" = "1" ]; then
+if [ -n "$CRC_INTERACTIVE" ]; then
 	echo "==============="
-	echo "run interactive"
+	echo "run INTERACTIVE"
 	echo "==============="
 	/bin/sh ./prti1516e.sh
 else
 	echo "==================="
-	echo "run non-interactive"
+	echo "run non-INTERACTIVE"
 	echo "==================="
 	tail -f /dev/null | /bin/sh ./prti1516e.sh
 fi
