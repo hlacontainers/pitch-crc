@@ -2,15 +2,14 @@ version: '3'
 
 services:
  xserver:
-  image: ${REPOSITORY}xserver
+  image: hlacontainers/xserver
   ports:
   - "8080:8080"
  
  crc:
   image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}
-  volumes:
-  - ${PITCH_RTI_HOME}:/usr/local/prti1516e
+  mac_address: ${MAC_ADDRESS}
   environment:
-  - DISPLAY=${DISPLAY}
+  - DISPLAY=xserver:0
   ports:
   - "8989:8989"

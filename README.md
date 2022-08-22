@@ -1,19 +1,11 @@
-![Build Status](https://img.shields.io/docker/cloud/build/hlacontainers/pitch-crc)
-![Pulls](https://img.shields.io/docker/pulls/hlacontainers/pitch-crc)
-
 # Pitch CRC image
 The Pitch Central RTI Component (CRC) is an application that manages one or more federation executions within the Pitch RTI. For example, it keeps track of joined federates and maintains information about the publication and subscription interests of individual federates. The CRC is a required application when using the Pitch RTI.
 
 This repository contains the files and instructions to build and run a Docker container image for the Pitch CRC. **This repository does not include any Pitch files**. The Pitch RTI and license keys must be acquired from the vendor. A free version of the Pitch RTI for two federates can be requested from the vendor site. For more information about the Pitch RTI, see http://pitchtechnologies.com. 
 
-By default a **skeleton** Docker container image is built from the files in this repository. A skeleton container image does not include any Pitch proprietary files. These files must be mounted into the CRC container at run-time in order to create a functional CRC container.
+For the instructions to build a Pitch CRC container image see [BUILDME](BUILDME.md).
 
-For the instructions to build a skeleton or a complete Pitch CRC container image see [BUILDME](BUILDME.md).
-
-The simplest way to start the Pitch CRC container is with the following `docker-compose.yml` file, where in this example:
-
-- The Pitch CRC container image is a skeleton image. 
-- The **Linux edition** of the Pitch Free RTI is installed on the host file system under the directory `${PITCH_RTI_HOME}`.
+Having built an image, the simplest way to start the Pitch CRC container is with the following `docker-compose.yml` file:
 
 ````
 version: '3'
@@ -26,8 +18,6 @@ services:
  
  crc:
   image: ${REPOSITORY}pitch-crc:${PITCH_VERSION}
-  volumes:
-  - ${PITCH_RTI_HOME}:/usr/local/prti1516e
   environment:
   - DISPLAY=${DISPLAY}
   ports:
@@ -41,19 +31,13 @@ And where the following `.env` file is used:
 REPOSITORY=hlacontainers/
 
 # Pitch version
-PITCH_VERSION=skeleton
+PITCH_VERSION=5_5_5
 
 # X DISPLAY for the CRC (required for the Pitch Free RTI, optional for a licensed RTI)
 DISPLAY=xserver:0
-
-# Host installation directory of the Pitch RTI (TAILOR THIS TO YOUR OWN ENVIRONMENT)
-# For example:
-# - on Linux: PITCH_RTI_HOME=/usr/local/prti1516e
-# - on Windows: PITCH_RTI_HOME=C:\Program Files\prti1516e
-PITCH_RTI_HOME=/usr/local/prti1516e
 ````
 
-The environment file should be used to tailor the composition to the local infrastructure, such as the address of the X Server or the installation directory of the Pitch RTI.
+The environment file should be used to tailor the composition to the local infrastructure, such as the address of the X Server.
 
 Port 8989 is the default port on which the Pitch CRC listens for connection requests from a Local RTI Component (LRC).
 
@@ -130,7 +114,7 @@ The license key can also be injected in the CRC container image, making it a per
 With this option a new (licensed) CRC image is created. As a best practice the letter `L` is added to the version to indicate that the image holds a license key, for example:
 
 ````
-hlacontainers/pitch-crc:5_5_0_0L
+hlacontainers/pitch-crc:5_5_5L
 ````
 
 ## Provide an alternate Pitch RID file

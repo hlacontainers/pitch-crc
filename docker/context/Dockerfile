@@ -4,12 +4,12 @@
 #
 
 # Set default for build-time ARGs
-ARG PITCH_VERSION=skeleton
+ARG PITCH_VERSION=unknown
 
 #########################
 # Create Base image
 #########################
-FROM ubuntu:16.04 AS base
+FROM ubuntu:22.04 AS base
 
 ARG PITCH_VERSION
 
@@ -23,24 +23,10 @@ ENV RTI_HOME=/usr/local/prti1516e
 COPY ./prti1516e*${PITCH_VERSION}*linux64*.sh /tmp/
 RUN sh $(ls /tmp/*.sh) -q -d ${RTI_HOME}
 
-# Remove symlinks (Case #28420, Pitch RTI version 5_5_0_0)
-RUN if [ "${PITCH_VERSION}" = "5_5_0_0" ]; then \
-	rm -f ${RTI_HOME}/jre/lib/ext/booster1516.jar \
-	${RTI_HOME}/jre/lib/ext/prti1516-dlc.jar \
-	${RTI_HOME}/jre/lib/ext/prti1516e-cpp.jar \
-	${RTI_HOME}/jre/lib/ext/prtifull.jar \
-	${RTI_HOME}/jre/lib/ext/sigar.jar \
-	${RTI_HOME}/jre/lib/ext/webgui2-protocol.jar; \
-	fi
-
-# Ensure there is a skeleton structure
-RUN mkdir -p ${RTI_HOME}/bin ${RTI_HOME}/include ${RTI_HOME}/jre ${RTI_HOME}/lib ${RTI_HOME}/.install4j /root/prti1516e
-RUN touch /root/prti1516e/prti1516eLRC.settings /root/prti1516e/prti1516e.logging
-
 #########################
 # Create CRC image
 #########################
-FROM ubuntu:16.04
+FROM ubuntu:22.04
 
 # Get packages that we need to run the CRC GUI
 RUN apt-get update && apt-get install -y libfreetype6 libfontconfig libxext6 libxrender1 libxtst6 libxi6 netcat iproute2 net-tools
